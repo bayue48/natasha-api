@@ -1,0 +1,78 @@
+//1
+create table users(
+   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+   email VARCHAR(255) NOT NULL,
+   password VARCHAR(255) NOT NULL,
+   role VARCHAR(255) NOT NULL
+);
+
+create table mahasiswa(
+   nim INT NOT NULL UNIQUE,
+   nama VARCHAR(255) NOT NULL,
+   alamat VARCHAR(255) NOT NULL,
+   tanggal_lahir DATE NOT NULL,
+   jurusan VARCHAR(255) NOT NULL,
+   FOREIGN KEY (nim)
+      REFERENCES users (id)
+	   ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+create table dosen(
+  nidn INT NOT NULL UNIQUE,
+  nama VARCHAR(255) NOT NULL,
+  FOREIGN KEY (nidn)
+      REFERENCES users (id)
+	   ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+create table mata_kuliah(
+   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+   nama VARCHAR(255) NOT NULL
+);
+
+create table nilai(
+   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+   nim INT NOT NULL,
+   id_matkul INT NOT NULL,
+   nidn INT NOT NULL,
+   nilai INT NOT NULL,
+   keterangan VARCHAR(255) NOT NULL,
+   FOREIGN KEY (nim)
+      REFERENCES mahasiswa (nim)
+	   ON UPDATE CASCADE ON DELETE CASCADE,
+   FOREIGN KEY (id_matkul)
+      REFERENCES mata_kuliah (id)
+	   ON UPDATE CASCADE ON DELETE CASCADE,
+   FOREIGN KEY (nidn)
+      REFERENCES dosen (nidn)
+	   ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+//2
+BEGIN;
+INSERT INTO users (email, password, role)
+  VALUES('mahasiswa@demo.com', 'demo', 'mahasiswa');
+INSERT INTO mahasiswa (nim, nama, alamat, tanggal_lahir, jurusan) 
+  VALUES(LAST_INSERT_ID(),'Erich', 'Tuban, Jatim', '2021-06-01', 'informatika');
+INSERT INTO users (email, password, role)
+  VALUES('dosen@demo.com', 'demo', 'dosen');
+INSERT INTO dosen (nidn, nama) 
+  VALUES(LAST_INSERT_ID(),'Bayu');
+COMMIT;
+
+INSERT INTO mata_kuliah (nama)
+  VALUES('mtk'), ('b.indo'), ('b.inggris');
+
+INSERT INTO nilai (nim, id_matkul, nidn, nilai, keterangan)
+  VALUES(12, 1, 7, 80, 'lulus'), (12, 2, 7, 85, 'lulus'), (12, 3, 7, 75, 'lulus'),
+  (13, 1, 7, 90, 'lulus'), (13, 2, 7, 85, 'lulus'), (13, 3, 7, 65, 'belum lulus'),
+  (14, 1, 7, 75, 'lulus'), (14, 2, 7, 60, 'belum lulus'), (14, 3, 7, 75, 'lulus');
+
+//3
+SELECT n.id, m.nim, m.nama, m.alamat, m.tanggal_lahir, TIMESTAMPDIFF(YEAR,m.tanggal_lahir,CURDATE()) AS umur, m.jurusan, d.nama AS dosen, mk.nama AS mata_kuliah, n.nilai, n.keterangan 
+FROM mahasiswa AS m 
+JOIN nilai AS n ON n.nim = m.nim 
+JOIN dosen AS D ON n.nidn = d.nidn 
+JOIN mata_kuliah AS mk ON n.id_matkul = mk.id 
+WHERE nilai >= 75
+ORDER BY nilai DESC
