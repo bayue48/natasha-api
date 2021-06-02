@@ -82,7 +82,7 @@ POST
 ```
 - Register
 ```sh
-DELETE
+POST
 /auth/register
 ```
 
