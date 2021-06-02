@@ -38,7 +38,7 @@ database: YOUR_DBNAME,
 
 ### Usage
 
-`node index` OR `nodemon start` OR `npm start`
+`node index`
 
 Runs the app in the development mode.<br>
 Open [http://yourhostname:8000/](http://localhost:8000/) to view it in the browser.
