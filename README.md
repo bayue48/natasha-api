@@ -86,6 +86,10 @@ POST
 /auth/register
 ```
 
+### Documentation
+
+For more info visit [Postman](https://documenter.getpostman.com/view/13522642/TzY1jHDG)
+
 ## License
 
 Distributed under the MIT License.
